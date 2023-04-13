@@ -1,8 +1,16 @@
+
 import 'package:flutter/material.dart';
 import 'title_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+      MaterialApp(
+        initialRoute: 'main_menu',
+        routes: {
+          'main_menu': (context) => const TitleScreen(),
+        },
+      )
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -12,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      //home: TitleScreen(),
+      home: TitleScreen(),
     );
   }
 }
