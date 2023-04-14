@@ -1,4 +1,5 @@
-
+import 'package:android_projects/game_cover_screen.dart';
+import 'package:android_projects/games_screen.dart';
 import 'package:flutter/material.dart';
 import 'title_screen.dart';
 
@@ -8,6 +9,8 @@ void main() {
         initialRoute: 'main_menu',
         routes: {
           'main_menu': (context) => const TitleScreen(),
+          // make sure to change this const ^ when you want to check how your new class
+          // looks in the live preview in the emulator or web
         },
       )
   );
