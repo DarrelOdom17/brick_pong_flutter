@@ -26,7 +26,7 @@ class TitleScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 50),
               ),
               const Padding(padding: EdgeInsets.all(20)),
-              MenuButton("Play", 60, 150, () {}),
+              MenuButton("Play", 60, 150, () {Navigator.pushNamed(context, "/main_menu/play");}),
               const Padding(padding: EdgeInsets.all(5)),
               MenuButton("How to Play", 60, 150, () {}),
               const Padding(padding: EdgeInsets.all(5)),
