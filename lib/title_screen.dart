@@ -9,13 +9,7 @@ class TitleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: "Main Menu",
-        theme: ThemeData(
-          brightness: Brightness.dark,
-          primarySwatch: Colors.grey,
-        ),
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(title: const Text("Main Menu")),
         body: Center(
           child: Column(
@@ -28,17 +22,33 @@ class TitleScreen extends StatelessWidget {
               const Padding(padding: EdgeInsets.all(20)),
               MenuButton("Play", 60, 150, () {Navigator.pushNamed(context, "/main_menu/play");}),
               const Padding(padding: EdgeInsets.all(5)),
-              MenuButton("How to Play", 60, 150, () {}),
+              MenuButton("How to Play", 60, 150, () {Navigator.pushNamed(context, '/main_menu/how_to_play');}),
               const Padding(padding: EdgeInsets.all(5)),
               MenuButton("Statistics", 60, 150, () {Navigator.pushNamed(context, "/main_menu/statistics");}),
             ],
           ),
         ),
-      ),
-
-    );
+      );
   }
 }
+
+class HowToPlayScreen extends StatelessWidget {
+  const HowToPlayScreen({Key? key}) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context)
+  {
+    return Scaffold(
+        appBar: AppBar(title: const Text("How to Play")),
+        body: SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: Image.network("https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
+        ),
+      );
+  }
+}
+
 
 class MenuButton extends StatelessWidget {
   const MenuButton(
@@ -86,14 +96,8 @@ class StatisticsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Statistics",
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.grey,
-      ),
-      home: Scaffold(
-        appBar: AppBar(title: const Text("Statistics Screen")),
+    return Scaffold(
+        appBar: AppBar(title: const Text("Statistics Screen"), automaticallyImplyLeading: false,),
         body: Center(
           child: Column(
             children: [
@@ -137,8 +141,7 @@ class StatisticsScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
 
         ),
-      ),
-    );
+      );
   }
 }
 
