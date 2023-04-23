@@ -1,12 +1,17 @@
+import 'package:android_projects/title_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class GameOverScreen extends StatelessWidget {
   final bool isGameOver;
   final Function() onResetGame;
+  final Function()? onMainMenuReturn;
 
   const GameOverScreen(
-      {Key? key, required this.isGameOver, required this.onResetGame})
+      {Key? key,
+      required this.isGameOver,
+      required this.onResetGame,
+      required this.onMainMenuReturn})
       : super(key: key);
 
   static var gameFont = GoogleFonts.orbitron(
@@ -22,7 +27,7 @@ class GameOverScreen extends StatelessWidget {
                 alignment: const Alignment(0, -0.2),
                 child: Text(
                   'GAME OVER',
-                  style: gameFont,
+                  style: gameFont.copyWith(fontSize: 28),
                 ),
               ),
               Container(
@@ -32,8 +37,8 @@ class GameOverScreen extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Container(
-                      padding: const EdgeInsets.all(10),
-                      color: Colors.blueAccent,
+                      padding: const EdgeInsets.all(8),
+                      color: Colors.blue[300],
                       child: Text(
                         'Restart',
                         style: gameFont.copyWith(color: Colors.white),
@@ -42,6 +47,28 @@ class GameOverScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              Container(
+                alignment: const Alignment(0, 0.8),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const TitleScreen()),
+                    );
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      color: Colors.blue[300],
+                      child: Text(
+                        'Main Menu',
+                        style: gameFont.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              )
             ],
           )
         : Container();

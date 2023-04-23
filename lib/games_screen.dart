@@ -18,8 +18,9 @@ enum BallDirection { UP, DOWN, LEFT, RIGHT }
 class _GameScreenState extends State<GameScreen> {
   // Checks for game state and sets it to false on app startup
   // Will be updated in their respective classes when called.
-  bool hasGameStarted = false;
-  bool isGameOver = false;
+  bool hasGameStarted = true;
+  bool isGameOver = true;
+  bool hasReturnedToMainMenu = false;
 
   // Ball variables that give value to it's respective class
   // Will also set initial ball speed and direction on game start
@@ -58,6 +59,14 @@ class _GameScreenState extends State<GameScreen> {
     setState(() {
       isGameOver = false;
       hasGameStarted = false;
+    });
+  }
+
+  void returnToMainMenu() {
+    setState(() {
+      isGameOver = false;
+      hasGameStarted = false;
+      hasReturnedToMainMenu = true;
     });
   }
 
@@ -116,7 +125,7 @@ class _GameScreenState extends State<GameScreen> {
                 CoverScreen(hasGameStarted: hasGameStarted, isGameOver: isGameOver),
 
                 // Game-over screen call
-                GameOverScreen(isGameOver: isGameOver, onResetGame: restartGame),
+                GameOverScreen(isGameOver: isGameOver, onResetGame: restartGame, onMainMenuReturn: returnToMainMenu,),
 
                 // Ball object class call
                 // Ball(),

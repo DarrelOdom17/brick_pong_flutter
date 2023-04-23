@@ -18,7 +18,7 @@ class CoverScreen extends StatelessWidget {
         ? Container(
       alignment: const Alignment(0, -0.5),
       child: Text(
-        isGameOver ? 'BRICK PONG' : '',
+        isGameOver ? '' : 'BRICK PONG',
         style: gameFont.copyWith(color: Colors.blue[600]),
       ),
     )
