@@ -34,7 +34,7 @@ class TitleScreen extends StatelessWidget {
 
 class HowToPlayScreen extends StatelessWidget {
   const HowToPlayScreen({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context)
   {
@@ -136,7 +136,7 @@ class StatisticsScreen extends StatelessWidget {
             Navigator.pop(context);
           },
 
-          backgroundColor: Colors.grey,
+          backgroundColor: Colors.blue[300],
           label: const Text("Back"),
           icon: const Icon(Icons.arrow_back),
 
