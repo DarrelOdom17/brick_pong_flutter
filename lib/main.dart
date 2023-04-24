@@ -13,7 +13,7 @@ void main() {
     (
     theme: ThemeData(
       brightness: Brightness.dark,
-      primarySwatch: Colors.grey,
+      primarySwatch: Colors.blue,
     ),
     initialRoute: '/main_menu',
     routes: {
@@ -24,7 +24,7 @@ void main() {
       //'/main_menu/play': (context) => const Player(),
       '/main_menu/play': (context) => const GameScreen(),
       //'/main_menu/play' : (context) => GameOverScreen(),
-      //'/main_menu/play' : (context) => CoverScreen(),
+      //'/main_menu/play' : (context) => CoverScreen(hasGameStarted: hasGameStarted, isGameOver: isGameOver),
       //'/main_menu/play' : (context) => Ball(ballX: 0, ballY: 0, isGameOver: false, hasGameStarted: true)
     },
   ));
