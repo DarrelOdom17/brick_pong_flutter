@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:android_projects/GameObjects/ball.dart';
 import 'package:android_projects/GameObjects/player.dart';
-import 'package:android_projects/GameObjects/player_brick.dart';
+import 'package:android_projects/GameObjects/gamebrick.dart';
 import 'package:android_projects/game_cover_screen.dart';
 import 'package:android_projects/game_over_screen.dart';
 
@@ -23,11 +23,14 @@ class _GameScreenState extends State<GameScreen> {
   bool hasReturnedToMainMenu = false;
 
   // Ball variables that give value to it's respective class
-  // Will also set initial ball speed and direction on game start
   double ballX = 0;
   double ballY = 0;
   double ballXSpeed = 0.02;
   double ballYSpeed = 0.01;
+
+  // Sets initial ball direction on game start
+  var ballHorizontalDirection = BallDirection.RIGHT;
+  var ballVerticalDirection = BallDirection.DOWN;
 
   // Brick class variables for 'required' variables
   // Sets breakable brick size for use in game
@@ -51,7 +54,25 @@ class _GameScreenState extends State<GameScreen> {
 
   void moveBall() {
     setState(() {
+    // Move the ball vertically, on the Y-axis
+      if (ballVerticalDirection == BallDirection.UP)
+      {
+        ballY -= ballYSpeed;
+      }
+      else if (ballVerticalDirection == BallDirection.DOWN)
+        {
+          ballY += ballYSpeed;
+        }
 
+      // Move the ball horizontally, on the X-axis
+      if (ballHorizontalDirection == BallDirection.RIGHT)
+      {
+        ballX += ballXSpeed;
+      }
+      else if (ballHorizontalDirection == BallDirection.LEFT)
+      {
+        ballX -= ballXSpeed;
+      }
     });
   }
 

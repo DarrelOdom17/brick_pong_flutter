@@ -1,5 +1,5 @@
 
-import 'package:android_projects/GameObjects/player_brick.dart';
+import 'package:android_projects/GameObjects/gamebrick.dart';
 import 'package:android_projects/game_cover_screen.dart';
 import 'package:android_projects/game_over_screen.dart';
 import 'package:android_projects/games_screen.dart';
