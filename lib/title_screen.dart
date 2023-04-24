@@ -117,12 +117,20 @@ class StatisticsScreen extends StatelessWidget {
 
                 child: ElevatedButton(
                   onPressed: () {},
+                  style: const ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Align(
                         alignment: Alignment.center,
-                        child: Text(Highscore.toString()),
+
+                        child: Text(
+                            style: const TextStyle(
+                              color: Colors.black,
+                            ),
+                            Highscore.toString()),
                       ),
                     ],
                   ),
