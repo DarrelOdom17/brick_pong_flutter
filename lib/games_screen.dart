@@ -25,7 +25,7 @@ class _GameScreenState extends State<GameScreen> {
   // Ball variables that give value to it's respective class
   double ballX = 0;
   double ballY = 0;
-  double ballXSpeed = 0.02;
+  double ballXSpeed = 0.01;
   double ballYSpeed = 0.01;
 
   // Sets initial ball direction on game start
@@ -37,14 +37,23 @@ class _GameScreenState extends State<GameScreen> {
   double brickWidth = 0.35;
   double brickHeight = 0.07;
 
+  // Player brick variables
+  // player brick horizontal screen orientation
+  double playerX = -0.275;
+  // player brick size
+  double playerWidth = 1.5;
+
   void startGame() {
-    if (!hasGameStarted) {
+    if (!hasGameStarted)
+    {
       hasGameStarted = true;
-      Timer.periodic(const Duration(milliseconds: 10), (timer) {
+      Timer.periodic(const Duration(milliseconds: 10), (timer)
+      {
         moveBall();
         updateBallDirection();
 
-        if (isPlayerDead()) {
+        if (isPlayerDead())
+        {
           timer.cancel();
           isGameOver = true;
         }
@@ -54,15 +63,15 @@ class _GameScreenState extends State<GameScreen> {
 
   void moveBall() {
     setState(() {
-    // Move the ball vertically, on the Y-axis
+      // Move the ball vertically, on the Y-axis
       if (ballVerticalDirection == BallDirection.UP)
       {
         ballY -= ballYSpeed;
       }
       else if (ballVerticalDirection == BallDirection.DOWN)
-        {
-          ballY += ballYSpeed;
-        }
+      {
+        ballY += ballYSpeed;
+      }
 
       // Move the ball horizontally, on the X-axis
       if (ballHorizontalDirection == BallDirection.RIGHT)
@@ -78,6 +87,9 @@ class _GameScreenState extends State<GameScreen> {
 
   void restartGame() {
     setState(() {
+      ballX = 0;
+      ballY = 0;
+      playerX = -0.275;
       isGameOver = false;
       hasGameStarted = false;
     });
@@ -97,22 +109,41 @@ class _GameScreenState extends State<GameScreen> {
     });
   }
 
-  void updateBallDirection() {
+  void updateBallDirection()
+  {
     setState(() {
+      // Checks for ball horizontal location on screen
+      // If ball is reaches the bounds of the screen at '1' or '-1',
+      // i.e. RIGHT or LEFT, the balls direction is reversed
+      if (ballX >= 1)
+        {
+          ballHorizontalDirection = BallDirection.LEFT;
+        }
+      else if (ballX <= -1)
+        {
+          ballHorizontalDirection = BallDirection.RIGHT;
+        }
 
+      // Checks for ball vertical location on screen
+      // If ball is reaches the bounds of the screen at '1' or '-1',
+      // i.e. RIGHT or LEFT, the balls direction is reversed
+      if (ballY >= 0.9 && ballX >= playerX && ballX <= playerX + playerWidth)
+        {
+          ballVerticalDirection = BallDirection.UP;
+        }
+      else if (ballY <= -1)
+        {
+          ballVerticalDirection = BallDirection.DOWN;
+        }
     });
   }
 
   void playerMoveRight() {
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   void playerMoveLeft() {
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   bool isPlayerDead() {
@@ -143,16 +174,26 @@ class _GameScreenState extends State<GameScreen> {
             child: Stack(
               children: [
                 // tap to play
-                CoverScreen(hasGameStarted: hasGameStarted, isGameOver: isGameOver),
+                CoverScreen(
+                    hasGameStarted: hasGameStarted, isGameOver: isGameOver),
 
-                // Game-over screen call
-                GameOverScreen(isGameOver: isGameOver, onResetGame: restartGame, onMainMenuReturn: returnToMainMenu,),
+                // Game over screen call
+                GameOverScreen(
+                  isGameOver: isGameOver,
+                  onResetGame: restartGame,
+                  onMainMenuReturn: returnToMainMenu,
+                ),
 
                 // Ball object class call
-                // Ball(),
+                Ball(
+                  ballX: ballX,
+                  ballY: ballY,
+                  isGameOver: isGameOver,
+                  hasGameStarted: hasGameStarted,
+                ),
 
                 // Player class call
-                //Player(),
+                Player(playerX: playerX, playerWidth: playerWidth),
 
                 // Calls the bricks class that can then be usd to create a level
               ],

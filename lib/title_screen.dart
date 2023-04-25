@@ -10,7 +10,7 @@ class TitleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Main Menu")),
+        appBar: AppBar(title: const Text("Main Menu"), automaticallyImplyLeading: false),
         body: Center(
           child: Column(
             children:  [

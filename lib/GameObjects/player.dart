@@ -4,7 +4,10 @@ double playerX = -0.2;
 double playerWidth = 0.5;
 
 class Player extends StatelessWidget {
-  const Player({Key? key}) : super(key: key);
+  final double playerX;
+  final double playerWidth;
+
+  const Player({Key? key, required this.playerX, required this.playerWidth}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

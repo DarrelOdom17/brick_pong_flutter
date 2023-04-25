@@ -37,7 +37,7 @@ class Ball extends StatelessWidget {
                 elevation: 8,
                 shape: const CircleBorder(),
                 child: CircleAvatar(
-                  backgroundColor: Colors.blue[300],
+                  backgroundColor: Colors.blue[100],
                   radius: 7,
                   child: Container(
                     height: 15,
