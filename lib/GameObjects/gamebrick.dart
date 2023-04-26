@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
-// I named this file wrong. These are the breakable bricks we are using
-// 'NOT' the actual player brick at the bottom of the screen.
-double brickX = 0;
-double brickY = -0.9;
-double brickWidth = 0.35;
-double brickHeight = 0.07;
-bool brickBroken = false;
-
 class MyBrick extends StatelessWidget {
-  const MyBrick({Key? key}) : super(key: key);
+  final double brickX;
+  final double brickY;
+  final double brickWidth;
+  final double brickHeight;
+  final bool brickBroken;
+
+  const MyBrick({
+    Key? key,
+    required this.brickY,
+    required this.brickX,
+    required this.brickWidth,
+    required this.brickHeight,
+    required this.brickBroken,
+
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +29,7 @@ class MyBrick extends StatelessWidget {
               child: Container(
                 height: MediaQuery.of(context).size.height * brickHeight / 2,
                 width: MediaQuery.of(context).size.width * brickWidth / 2,
-                color: Colors.blue[400],
+                color: Colors.pink[400],
               ),
             ),
           );

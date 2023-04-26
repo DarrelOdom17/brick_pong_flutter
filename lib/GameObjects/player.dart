@@ -19,7 +19,7 @@ class Player extends StatelessWidget {
         child: Container(
           height: 10,
           width: MediaQuery.of(context).size.width * playerWidth / 2,
-          color: Colors.blue[800],
+          color: Colors.pink[400],
         ),
       ),
     );

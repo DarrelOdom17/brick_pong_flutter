@@ -25,7 +25,7 @@ class _GameScreenState extends State<GameScreen> {
   // Ball variables that give value to it's respective class
   double ballX = 0;
   double ballY = 0;
-  double ballXSpeed = 0.01;
+  double ballXSpeed = 0.02;
   double ballYSpeed = 0.01;
 
   // Sets initial ball direction on game start
@@ -33,30 +33,50 @@ class _GameScreenState extends State<GameScreen> {
   var ballVerticalDirection = BallDirection.DOWN;
 
   // Brick class variables for 'required' variables
-  // Sets breakable brick size for use in game
-  double brickWidth = 0.35;
-  double brickHeight = 0.07;
+  // Sets breakable brick size, screen position and the space between bricks, for use in game
+  static double brickWidth = 0.375;
+  static double brickHeight = 0.07;
+  static double startingBrickX = -1 + wallGap;
+  static double startingBrickY = -0.9;
+  static double brickGap = 0.02;
+  static int numberOfBricksInRow = 5;
+  static double wallGap = 0.5 *
+      (2 -
+          numberOfBricksInRow * brickWidth -
+          (numberOfBricksInRow - 1) * brickGap);
+
+  bool brickBroken = false;
+
+  List gameBricks = [
+    for (int i = 0; i < 3; i++)
+      for (int j = 0; j < 5; j++)
+        [
+          startingBrickX + j * (brickWidth + brickGap),
+          startingBrickY + i * (brickHeight + brickGap),
+          false,
+        ]
+  ];
 
   // Player brick variables
   // player brick horizontal screen orientation
   double playerX = -0.275;
+
   // player brick size
-  double playerWidth = 1.5;
+  double playerWidth = 0.5;
 
   void startGame() {
-    if (!hasGameStarted)
-    {
+    if (!hasGameStarted) {
       hasGameStarted = true;
-      Timer.periodic(const Duration(milliseconds: 10), (timer)
-      {
+      Timer.periodic(const Duration(milliseconds: 10), (timer) {
         moveBall();
         updateBallDirection();
 
-        if (isPlayerDead())
-        {
+        if (isPlayerDead()) {
           timer.cancel();
           isGameOver = true;
         }
+
+        brokenBrickCheck();
       });
     }
   }
@@ -64,22 +84,16 @@ class _GameScreenState extends State<GameScreen> {
   void moveBall() {
     setState(() {
       // Move the ball vertically, on the Y-axis
-      if (ballVerticalDirection == BallDirection.UP)
-      {
+      if (ballVerticalDirection == BallDirection.UP) {
         ballY -= ballYSpeed;
-      }
-      else if (ballVerticalDirection == BallDirection.DOWN)
-      {
+      } else if (ballVerticalDirection == BallDirection.DOWN) {
         ballY += ballYSpeed;
       }
 
       // Move the ball horizontally, on the X-axis
-      if (ballHorizontalDirection == BallDirection.RIGHT)
-      {
+      if (ballHorizontalDirection == BallDirection.RIGHT) {
         ballX += ballXSpeed;
-      }
-      else if (ballHorizontalDirection == BallDirection.LEFT)
-      {
+      } else if (ballHorizontalDirection == BallDirection.LEFT) {
         ballX -= ballXSpeed;
       }
     });
@@ -105,45 +119,94 @@ class _GameScreenState extends State<GameScreen> {
 
   void brokenBrickCheck() {
     setState(() {
+      int brokenBrickCount = 0;
+      for (int i = 0; i < gameBricks.length; i++)
+      {
+        final brick = gameBricks[i];
 
+        if (!brick[2] &&
+            ballX >= brick[0] &&
+            ballX <= brick[0] + brickWidth &&
+            ballY <= brick[1] + brickHeight) {
+          setState(() {
+            brick[2] = true;
+            brokenBrickCount++;
+
+            final brickCenterX = brick[0] + brickWidth / 2;
+            final brickCenterY = brick[1] + brickHeight / 2;
+
+            final dx = ballX - brickCenterX;
+            final dy = ballY - brickCenterY;
+
+            if (dx.abs() > dy.abs())
+            {
+              ballVerticalDirection =
+                  dy > 0 ? BallDirection.DOWN : BallDirection.UP;
+              ballHorizontalDirection =
+                  ballHorizontalDirection == BallDirection.RIGHT
+                      ? BallDirection.LEFT
+                      : BallDirection.RIGHT;
+            }
+            else
+            {
+              ballHorizontalDirection =
+                  dx > 0 ? BallDirection.RIGHT : BallDirection.LEFT;
+              ballVerticalDirection =
+                  ballVerticalDirection == BallDirection.DOWN
+                      ? BallDirection.UP
+                      : BallDirection.DOWN;
+            }
+          });
+        }
+
+        if (brokenBrickCount == gameBricks.length)
+          {
+            GameOverScreen(
+              isGameOver: isGameOver,
+              onResetGame: restartGame,
+              onMainMenuReturn: returnToMainMenu,
+            );
+          }
+      }
     });
   }
 
-  void updateBallDirection()
-  {
+  void updateBallDirection() {
     setState(() {
       // Checks for ball horizontal location on screen
       // If ball is reaches the bounds of the screen at '1' or '-1',
       // i.e. RIGHT or LEFT, the balls direction is reversed
-      if (ballX >= 1)
-        {
-          ballHorizontalDirection = BallDirection.LEFT;
-        }
-      else if (ballX <= -1)
-        {
-          ballHorizontalDirection = BallDirection.RIGHT;
-        }
+      if (ballX >= 1) {
+        ballHorizontalDirection = BallDirection.LEFT;
+      } else if (ballX <= -1) {
+        ballHorizontalDirection = BallDirection.RIGHT;
+      }
 
       // Checks for ball vertical location on screen
       // If ball is reaches the bounds of the screen at '1' or '-1',
       // i.e. RIGHT or LEFT, the balls direction is reversed
-      if (ballY >= 0.9 && ballX >= playerX && ballX <= playerX + playerWidth)
-        {
-          ballVerticalDirection = BallDirection.UP;
-        }
-      else if (ballY <= -1)
-        {
-          ballVerticalDirection = BallDirection.DOWN;
-        }
+      if (ballY >= 0.9 && ballX >= playerX && ballX <= playerX + playerWidth) {
+        ballVerticalDirection = BallDirection.UP;
+      } else if (ballY <= -1) {
+        ballVerticalDirection = BallDirection.DOWN;
+      }
     });
   }
 
   void playerMoveRight() {
-    setState(() {});
+    setState(() {
+      if (playerX + playerWidth <= 1) {
+        playerX += 0.025;
+      }
+    });
   }
 
   void playerMoveLeft() {
-    setState(() {});
+    setState(() {
+      if (playerX >= -1) {
+        playerX -= 0.025;
+      }
+    });
   }
 
   bool isPlayerDead() {
@@ -157,7 +220,7 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onPanUpdate: (details) {
+      onHorizontalDragUpdate: (DragUpdateDetails details) {
         if (details.delta.dx > 0) {
           playerMoveRight();
         }
@@ -196,6 +259,106 @@ class _GameScreenState extends State<GameScreen> {
                 Player(playerX: playerX, playerWidth: playerWidth),
 
                 // Calls the bricks class that can then be usd to create a level
+                // First row of bricks
+                MyBrick(
+                    brickY: gameBricks[0][1],
+                    brickX: gameBricks[0][0],
+                    brickWidth: brickWidth,
+                    brickHeight: brickHeight,
+                    brickBroken: gameBricks[0][2]),
+                MyBrick(
+                    brickY: gameBricks[1][1],
+                    brickX: gameBricks[1][0],
+                    brickWidth: brickWidth,
+                    brickHeight: brickHeight,
+                    brickBroken: gameBricks[1][2]),
+                MyBrick(
+                    brickY: gameBricks[2][1],
+                    brickX: gameBricks[2][0],
+                    brickWidth: brickWidth,
+                    brickHeight: brickHeight,
+                    brickBroken: gameBricks[2][2]),
+                MyBrick(
+                    brickY: gameBricks[3][1],
+                    brickX: gameBricks[3][0],
+                    brickWidth: brickWidth,
+                    brickHeight: brickHeight,
+                    brickBroken: gameBricks[3][2]),
+                MyBrick(
+                    brickY: gameBricks[4][1],
+                    brickX: gameBricks[4][0],
+                    brickWidth: brickWidth,
+                    brickHeight: brickHeight,
+                    brickBroken: gameBricks[4][2]),
+
+                // Second row of Bricks
+                MyBrick(
+                    brickY: gameBricks[5][1],
+                    brickX: gameBricks[5][0],
+                    brickWidth: brickWidth,
+                    brickHeight: brickHeight,
+                    brickBroken: gameBricks[5][2]),
+                MyBrick(
+                    brickY: gameBricks[6][1],
+                    brickX: gameBricks[6][0],
+                    brickWidth: brickWidth,
+                    brickHeight: brickHeight,
+                    brickBroken: gameBricks[6][2]),
+                MyBrick(
+                    brickY: gameBricks[7][1],
+                    brickX: gameBricks[7][0],
+                    brickWidth: brickWidth,
+                    brickHeight: brickHeight,
+                    brickBroken: gameBricks[7][2]),
+                MyBrick(
+                    brickY: gameBricks[8][1],
+                    brickX: gameBricks[8][0],
+                    brickWidth: brickWidth,
+                    brickHeight: brickHeight,
+                    brickBroken: gameBricks[8][2]),
+                MyBrick(
+                    brickY: gameBricks[9][1],
+                    brickX: gameBricks[9][0],
+                    brickWidth: brickWidth,
+                    brickHeight: brickHeight,
+                    brickBroken: gameBricks[9][2]),
+
+                // Third row of bricks
+                MyBrick(
+                  brickY: gameBricks[10][1],
+                  brickX: gameBricks[10][0],
+                  brickWidth: brickWidth,
+                  brickHeight: brickHeight,
+                  brickBroken: gameBricks[10][2],
+                ),
+                MyBrick(
+                  brickY: gameBricks[11][1],
+                  brickX: gameBricks[11][0],
+                  brickWidth: brickWidth,
+                  brickHeight: brickHeight,
+                  brickBroken: gameBricks[11][2],
+                ),
+                MyBrick(
+                  brickY: gameBricks[12][1],
+                  brickX: gameBricks[12][0],
+                  brickWidth: brickWidth,
+                  brickHeight: brickHeight,
+                  brickBroken: gameBricks[12][2],
+                ),
+                MyBrick(
+                  brickY: gameBricks[13][1],
+                  brickX: gameBricks[13][0],
+                  brickWidth: brickWidth,
+                  brickHeight: brickHeight,
+                  brickBroken: gameBricks[13][2],
+                ),
+                MyBrick(
+                  brickY: gameBricks[14][1],
+                  brickX: gameBricks[14][0],
+                  brickWidth: brickWidth,
+                  brickHeight: brickHeight,
+                  brickBroken: gameBricks[14][2],
+                ),
               ],
             ),
           ),
