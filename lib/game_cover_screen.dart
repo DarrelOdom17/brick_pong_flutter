@@ -5,8 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 class CoverScreen extends StatelessWidget {
   final bool hasGameStarted;
   final bool isGameOver;
+  final bool isGameWon;
 
-  const CoverScreen({Key? key, required this.hasGameStarted, required this.isGameOver}) : super(key: key);
+  const CoverScreen({Key? key, required this.hasGameStarted, required this.isGameOver, required this.isGameWon}) : super(key: key);
 
   static var gameFont = GoogleFonts.orbitron(
       textStyle: TextStyle(
@@ -18,14 +19,14 @@ class CoverScreen extends StatelessWidget {
         ? Container(
       alignment: const Alignment(0, -0.5),
       child: Text(
-        isGameOver ? '' : 'BRICK PONG',
+        isGameOver ? 'BRICK PONG' : '',
         style: gameFont.copyWith(color: Colors.blue[600]),
       ),
     )
         : Stack(
       children: [
         Container(
-          alignment: const Alignment(0, -0.7),
+          alignment: const Alignment(0, -0.3),
           child: Text(
             'BRICK PONG',
             style: gameFont,

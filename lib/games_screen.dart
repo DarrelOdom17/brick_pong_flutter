@@ -1,3 +1,4 @@
+import 'package:android_projects/game_won_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:android_projects/GameObjects/ball.dart';
@@ -21,6 +22,7 @@ class _GameScreenState extends State<GameScreen> {
   bool hasGameStarted = true;
   bool isGameOver = true;
   bool hasReturnedToMainMenu = false;
+  bool isGameWon = false;
 
   // Ball variables that give value to it's respective class
   double ballX = 0;
@@ -46,6 +48,7 @@ class _GameScreenState extends State<GameScreen> {
           (numberOfBricksInRow - 1) * brickGap);
 
   bool brickBroken = false;
+  int brokenBrickCount = 0;
 
   List gameBricks = [
     for (int i = 0; i < 3; i++)
@@ -62,11 +65,12 @@ class _GameScreenState extends State<GameScreen> {
   double playerX = -0.275;
 
   // player brick size
-  double playerWidth = 0.5;
+  double playerWidth = 1.5;
 
   void startGame() {
     if (!hasGameStarted) {
       hasGameStarted = true;
+      isGameWon = true;
       Timer.periodic(const Duration(milliseconds: 10), (timer) {
         moveBall();
         updateBallDirection();
@@ -74,6 +78,12 @@ class _GameScreenState extends State<GameScreen> {
         if (isPlayerDead()) {
           timer.cancel();
           isGameOver = true;
+        }
+
+        if (allBricksBroken()) {
+          timer.cancel();
+          isGameWon = true;
+          //isGameWon = true;
         }
 
         brokenBrickCheck();
@@ -106,6 +116,7 @@ class _GameScreenState extends State<GameScreen> {
       playerX = -0.275;
       isGameOver = false;
       hasGameStarted = false;
+      isGameWon = false;
     });
   }
 
@@ -119,9 +130,7 @@ class _GameScreenState extends State<GameScreen> {
 
   void brokenBrickCheck() {
     setState(() {
-      int brokenBrickCount = 0;
-      for (int i = 0; i < gameBricks.length; i++)
-      {
+      for (int i = 0; i < gameBricks.length; i++) {
         final brick = gameBricks[i];
 
         if (!brick[2] &&
@@ -138,17 +147,14 @@ class _GameScreenState extends State<GameScreen> {
             final dx = ballX - brickCenterX;
             final dy = ballY - brickCenterY;
 
-            if (dx.abs() > dy.abs())
-            {
+            if (dx.abs() > dy.abs()) {
               ballVerticalDirection =
                   dy > 0 ? BallDirection.DOWN : BallDirection.UP;
               ballHorizontalDirection =
                   ballHorizontalDirection == BallDirection.RIGHT
                       ? BallDirection.LEFT
                       : BallDirection.RIGHT;
-            }
-            else
-            {
+            } else {
               ballHorizontalDirection =
                   dx > 0 ? BallDirection.RIGHT : BallDirection.LEFT;
               ballVerticalDirection =
@@ -158,15 +164,6 @@ class _GameScreenState extends State<GameScreen> {
             }
           });
         }
-
-        if (brokenBrickCount == gameBricks.length)
-          {
-            GameOverScreen(
-              isGameOver: isGameOver,
-              onResetGame: restartGame,
-              onMainMenuReturn: returnToMainMenu,
-            );
-          }
       }
     });
   }
@@ -217,6 +214,14 @@ class _GameScreenState extends State<GameScreen> {
     return false;
   }
 
+  bool allBricksBroken() {
+    if (brokenBrickCount == gameBricks.length) {
+      return true;
+    }
+
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -238,7 +243,8 @@ class _GameScreenState extends State<GameScreen> {
               children: [
                 // tap to play
                 CoverScreen(
-                    hasGameStarted: hasGameStarted, isGameOver: isGameOver),
+                    hasGameStarted: hasGameStarted, isGameOver: isGameOver, isGameWon: isGameWon,
+                ),
 
                 // Game over screen call
                 GameOverScreen(
@@ -246,6 +252,11 @@ class _GameScreenState extends State<GameScreen> {
                   onResetGame: restartGame,
                   onMainMenuReturn: returnToMainMenu,
                 ),
+
+                GameWonScreen(
+                    isGameWon: isGameWon,
+                    onResetGame: restartGame,
+                    onMainMenuReturn: returnToMainMenu),
 
                 // Ball object class call
                 Ball(
