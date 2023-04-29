@@ -53,7 +53,8 @@ class GameOverScreen extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const TitleScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const TitleScreen()),
                     );
                   },
                   child: ClipRRect(

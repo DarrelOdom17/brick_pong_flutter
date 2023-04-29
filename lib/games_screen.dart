@@ -6,11 +6,12 @@ import 'package:android_projects/GameObjects/player.dart';
 import 'package:android_projects/GameObjects/gamebrick.dart';
 import 'package:android_projects/game_cover_screen.dart';
 import 'package:android_projects/game_over_screen.dart';
-
-
+import 'package:google_fonts/google_fonts.dart';
 
 class GameScreen extends StatefulWidget {
-  const GameScreen({Key? key}) : super(key: key);
+  final void Function(int) updateScore;
+
+  const GameScreen({Key? key, required this.updateScore}) : super(key: key);
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -19,6 +20,10 @@ class GameScreen extends StatefulWidget {
 enum BallDirection { UP, DOWN, LEFT, RIGHT }
 
 class _GameScreenState extends State<GameScreen> {
+  static var gameFont = GoogleFonts.orbitron(
+      textStyle:
+          TextStyle(color: Colors.blue[800], letterSpacing: 0, fontSize: 24));
+
   // Checks for game state and sets it to false on app startup
   // Will be updated in their respective classes when called.
   bool hasGameStarted = false;
@@ -29,8 +34,8 @@ class _GameScreenState extends State<GameScreen> {
   // Ball variables that give value to it's respective class
   double ballX = 0;
   double ballY = 0;
-  double ballXSpeed = 0.02;
-  double ballYSpeed = 0.01;
+  double ballXSpeed = 0.04;
+  double ballYSpeed = 0.02;
 
   // Sets initial ball direction on game start
   var ballHorizontalDirection = BallDirection.RIGHT;
@@ -44,6 +49,7 @@ class _GameScreenState extends State<GameScreen> {
   static double startingBrickY = -0.9;
   static double brickGap = 0.02;
   static int numberOfBricksInRow = 5;
+
   static double wallGap = 0.5 *
       (2 -
           numberOfBricksInRow * brickWidth -
@@ -51,7 +57,16 @@ class _GameScreenState extends State<GameScreen> {
 
   bool brickBroken = false;
   int brokenBrickCount = 0;
-  int scorePerBrokenBrick = 0;
+  int _valuePerBrick = 5;
+  int _score = 0;
+  bool isInitialScreen = false;
+
+  void updateScore(int newScore) {
+    setState(() {
+      _score = newScore;
+    });
+    widget.updateScore(_score);
+  }
 
   List gameBricks = [
     for (int i = 0; i < 4; i++)
@@ -68,12 +83,13 @@ class _GameScreenState extends State<GameScreen> {
   double playerX = -0.275;
 
   // player brick size
-  double playerWidth = 0.5;
+  double playerWidth = 2.5;
 
   void startGame() {
     if (!hasGameStarted) {
       hasGameStarted = true;
       isGameWon = false;
+      _score = 0;
       Timer.periodic(const Duration(milliseconds: 10), (timer) {
         moveBall();
         updateBallDirection();
@@ -86,9 +102,7 @@ class _GameScreenState extends State<GameScreen> {
         if (allBricksBroken()) {
           timer.cancel();
           isGameWon = true;
-          //isGameWon = true;
         }
-
         brokenBrickCheck();
       });
     }
@@ -113,14 +127,40 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void restartGame() {
-    setState(() {
-      ballX = 0;
-      ballY = 0;
-      playerX = -0.275;
-      isGameOver = false;
-      hasGameStarted = false;
-      isGameWon = false;
-    });
+    if (allBricksBroken()) {
+      setState(() {
+        ballX = 0;
+        ballY = 0;
+        playerX = -0.275;
+        isGameOver = false;
+        hasGameStarted = false;
+        isGameWon = false;
+        _score = 0;
+        isInitialScreen = true;
+        brokenBrickCount = 0;
+        gameBricks = [
+          for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 5; j++)
+              [
+                startingBrickX + j * (brickWidth + brickGap),
+                startingBrickY + i * (brickHeight + brickGap),
+                false,
+              ]
+        ];
+      });
+    } else {
+      setState(() {
+        ballX = 0;
+        ballY = 0;
+        playerX = -0.275;
+        isGameOver = false;
+        hasGameStarted = false;
+        isGameWon = false;
+        _score = 0;
+        isInitialScreen = false;
+        brokenBrickCount = 0;
+      });
+    }
   }
 
   void returnToMainMenu() {
@@ -143,7 +183,8 @@ class _GameScreenState extends State<GameScreen> {
           setState(() {
             brick[2] = true;
             brokenBrickCount++;
-            scorePerBrokenBrick = brokenBrickCount * 5;
+            updateScore(_valuePerBrick * brokenBrickCount);
+            //score = valuePerBrick * brokenBrickCount;
 
             final brickCenterX = brick[0] + brickWidth / 2;
             final brickCenterY = brick[1] + brickHeight / 2;
@@ -307,7 +348,6 @@ class _GameScreenState extends State<GameScreen> {
                     brickWidth: brickWidth,
                     brickHeight: brickHeight,
                     brickBroken: gameBricks[4][2]),
-
                 // Second row of Bricks
                 MyBrick(
                     brickY: gameBricks[5][1],
@@ -411,6 +451,13 @@ class _GameScreenState extends State<GameScreen> {
                   brickWidth: brickWidth,
                   brickHeight: brickHeight,
                   brickBroken: gameBricks[19][2],
+                ),
+
+                Container(
+                  alignment: const Alignment(0, 1.0),
+                  child: Text('SCORE: $_score',
+                      style: gameFont.copyWith(
+                          color: Colors.white, letterSpacing: 0, fontSize: 24)),
                 ),
               ],
             ),
