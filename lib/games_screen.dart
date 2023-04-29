@@ -83,7 +83,7 @@ class _GameScreenState extends State<GameScreen> {
   double playerX = -0.275;
 
   // player brick size
-  double playerWidth = 2.5;
+  double playerWidth = 0.5;
 
   void startGame() {
     if (!hasGameStarted) {
