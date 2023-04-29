@@ -17,7 +17,9 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   void updateScore(BuildContext context, int score) {
-    scoreValue.value += score;
+    print(score);
+    if (score > scoreValue.value)
+      scoreValue.value = score;
   }
 
   @override
@@ -31,8 +33,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/main_menu': (context) => const TitleScreen(),
         '/main_menu/statistics': (context) =>
-            StatisticsScreen(updateScore: (score) {
-              scoreValue.value = score;
+            StatisticsScreen(getScore: () {
+              return scoreValue.value;
             }),
         '/main_menu/how_to_play': (context) => const HowToPlayScreen(),
         '/main_menu/play': (context) => GameScreen(updateScore: (score) {

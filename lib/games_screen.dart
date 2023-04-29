@@ -159,6 +159,16 @@ class _GameScreenState extends State<GameScreen> {
         _score = 0;
         isInitialScreen = false;
         brokenBrickCount = 0;
+
+        gameBricks = [
+          for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 5; j++)
+              [
+                startingBrickX + j * (brickWidth + brickGap),
+                startingBrickY + i * (brickHeight + brickGap),
+                false,
+              ]
+        ];
       });
     }
   }
@@ -216,7 +226,7 @@ class _GameScreenState extends State<GameScreen> {
   void updateBallDirection() {
     setState(() {
       // Checks for ball horizontal location on screen
-      // If ball is reaches the bounds of the screen at '1' or '-1',
+      // If ball reaches the bounds of the screen at '1' or '-1',
       // i.e. RIGHT or LEFT, the balls direction is reversed
       if (ballX >= 1) {
         ballHorizontalDirection = BallDirection.LEFT;
@@ -225,7 +235,7 @@ class _GameScreenState extends State<GameScreen> {
       }
 
       // Checks for ball vertical location on screen
-      // If ball is reaches the bounds of the screen at '1' or '-1',
+      // If ball reaches the bounds of the screen at '1' or '-1',
       // i.e. RIGHT or LEFT, the balls direction is reversed
       if (ballY >= 0.9 && ballX >= playerX && ballX <= playerX + playerWidth) {
         ballVerticalDirection = BallDirection.UP;

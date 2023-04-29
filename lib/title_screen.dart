@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:android_projects/games_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:android_projects/GameObjects/gamebrick.dart';
+import 'package:android_projects/main.dart';
 
 class TitleScreen extends StatelessWidget {
   const TitleScreen({Key? key}) : super(key: key);
@@ -91,9 +92,9 @@ class MenuButton extends StatelessWidget {
 }
 
 class StatisticsScreen extends StatefulWidget {
-  final void Function(int) updateScore;
+  final int Function() getScore;
 
-  const StatisticsScreen({Key? key, required this.updateScore})
+  const StatisticsScreen({Key? key, required this.getScore})
       : super(key: key);
 
   @override
@@ -101,13 +102,6 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
-  int scoreValue = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    widget.updateScore(scoreValue);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +137,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        scoreValue.toString(),
+                        widget.getScore().toString(),
                         style: const TextStyle(
                           color: Colors.black,
                         ),
