@@ -50,7 +50,7 @@ class HowToPlayScreen extends StatelessWidget {
         width: double.infinity,
         height: double.infinity,
         child: Image.network(
-            "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
+            "https://cdn.discordapp.com/attachments/671118620356640780/1102825749808951366/ponghowto.png"),
       ),
     );
   }
