@@ -34,7 +34,7 @@ class _GameScreenState extends State<GameScreen> {
   // Ball variables that give value to it's respective class
   double ballX = 0;
   double ballY = 0;
-  double ballXSpeed = 0.04;
+  double ballXSpeed = 0.01;
   double ballYSpeed = 0.02;
 
   // Sets initial ball direction on game start
