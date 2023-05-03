@@ -61,6 +61,7 @@ class _GameScreenState extends State<GameScreen> {
   int _score = 0;
   bool isInitialScreen = false;
 
+  // Updates score between files
   void updateScore(int newScore) {
     setState(() {
       _score = newScore;
@@ -85,6 +86,7 @@ class _GameScreenState extends State<GameScreen> {
   // player brick size
   double playerWidth = 0.5;
 
+  // Is called whenever the game screen is called
   void startGame() {
     if (!hasGameStarted) {
       hasGameStarted = true;
@@ -94,11 +96,13 @@ class _GameScreenState extends State<GameScreen> {
         moveBall();
         updateBallDirection();
 
+        // Game over condition check
         if (isPlayerDead()) {
           timer.cancel();
           isGameOver = true;
         }
 
+        // Win condition check
         if (allBricksBroken()) {
           timer.cancel();
           isGameWon = true;
@@ -126,6 +130,8 @@ class _GameScreenState extends State<GameScreen> {
     });
   }
 
+  // Resets all bool checks and the player position on each game restart
+  // I.e. Resets all the game conditions to a default state
   void restartGame() {
     if (allBricksBroken()) {
       setState(() {
@@ -173,6 +179,8 @@ class _GameScreenState extends State<GameScreen> {
     }
   }
 
+  // Bool checks to make sure the game-over and win screens do not
+  // enable on main menu scene change
   void returnToMainMenu() {
     setState(() {
       isGameOver = false;
@@ -181,6 +189,10 @@ class _GameScreenState extends State<GameScreen> {
     });
   }
 
+  // Checks for 'broken bricks' by referencing the player position
+  // and comparing that to the ball position on screen.
+  // If they overlap, the ball direction is changed, if not and the
+  // ball position exceeds the bounds set, the player is killed.
   void brokenBrickCheck() {
     setState(() {
       for (int i = 0; i < gameBricks.length; i++) {
@@ -245,6 +257,8 @@ class _GameScreenState extends State<GameScreen> {
     });
   }
 
+  // Allows for player brick movement along the horizontal axis of the screen
+  // 0 is the center of the screen, left = 0 -> -1 and right 0 -> +1
   void playerMoveRight() {
     setState(() {
       if (playerX + playerWidth <= 1) {
@@ -253,6 +267,8 @@ class _GameScreenState extends State<GameScreen> {
     });
   }
 
+  // Allows for player brick movement along the horizontal axis of the screen
+  // 0 is the center of the screen, left = 0 -> -1 and right 0 -> +1
   void playerMoveLeft() {
     setState(() {
       if (playerX >= -1) {
@@ -261,6 +277,7 @@ class _GameScreenState extends State<GameScreen> {
     });
   }
 
+  // Bool check for the player, which references the ball's vertical/Y position
   bool isPlayerDead() {
     if (ballY >= 1) {
       return true;
@@ -269,6 +286,9 @@ class _GameScreenState extends State<GameScreen> {
     return false;
   }
 
+  // Compares the broken brick count that is accumulated in the broken brick check
+  // function and then compares it to the 'gameBricks' list length. If they are
+  // equal the function can be used as reference to update the game win screen bool
   bool allBricksBroken() {
     if (brokenBrickCount == gameBricks.length) {
       return true;
@@ -277,6 +297,13 @@ class _GameScreenState extends State<GameScreen> {
     return false;
   }
 
+  // Main game scene uses a stack that is a child of a scaffold, that references all classes
+  // and files required for the game. By using a Scaffold in the main game scene that hold
+  // each subsequent scene we can orient all our separate screens to use a similar layout.
+  // Meaning, that we don't have to worry about our container alignments between screen
+  // quite so much. We also use a gesture detector that updates on the horizontal
+  // axis using a 'onHorizontalDragUpdate' detection. Could use onPan as well, but for
+  // this iteration it is unneeded, as we are not updating our players vertical position
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
